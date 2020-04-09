@@ -6,6 +6,8 @@ public class CharacterNavigatorController : MonoBehaviour
 
     #region Private
 
+    [Header("Only Debug")]
+    [SerializeField]
     private Vector3 destination;
     [SerializeField]
     private float stopDistance;
@@ -13,11 +15,13 @@ public class CharacterNavigatorController : MonoBehaviour
     private float rotationSpeed;
     [SerializeField]
     private float movementSpeed;
+    [SerializeField]
+    private bool startOnPlay = false;
 
     private Vector3 velocity;
     private Vector3 lastPosition;
     private Animator animator;
-    private bool isCorotineRunning = false;
+    private bool isCoroutineRunning = false;
 
     private bool _reachedDestination;
     private bool _isWait;
@@ -32,6 +36,7 @@ public class CharacterNavigatorController : MonoBehaviour
         get { return _reachedDestination; }
 
     }
+
     public bool isWait
     {
 
@@ -52,12 +57,18 @@ public class CharacterNavigatorController : MonoBehaviour
         lastPosition = transform.position;
         destination = transform.position;
 
-    }
+        if (startOnPlay == true)
+        {
 
-    private void Start()
-    {
+            _isWait = false;
+            StartCoroutine(CharacterNavigatorLoop());
 
-        StartCoroutine(CharacterNavigatorLoop());
+        }
+        else
+        {
+            _isWait = true;
+
+        }
 
     }
     
@@ -82,12 +93,43 @@ public class CharacterNavigatorController : MonoBehaviour
     public void StartMovement()
     {
 
-        if(isCorotineRunning == false)
+        if(isCoroutineRunning == false)
         {
 
+            _isWait = false;
             StartCoroutine(CharacterNavigatorLoop());
 
         }
+
+    }
+
+    public void SetStopDistance(float value)
+    {
+
+        if (value < 0)
+            value = 0;
+
+        stopDistance = value;
+
+    }
+
+    public void SetRotationSpeed(float value)
+    {
+
+        if (value < 0)
+            value = 0;
+
+        rotationSpeed = value;
+
+    }
+
+    public void SetMovementSpeed(float value)
+    {
+
+        if (value < 0)
+            value = 0.1f;
+
+        movementSpeed = value;
 
     }
 
@@ -98,9 +140,9 @@ public class CharacterNavigatorController : MonoBehaviour
     private IEnumerator CharacterNavigatorLoop()
     {
 
-        isCorotineRunning = true;
+        isCoroutineRunning = true;
 
-        while (isCorotineRunning == true)
+        while (isCoroutineRunning == true)
         {
 
             if (_isWait == false)
@@ -163,7 +205,7 @@ public class CharacterNavigatorController : MonoBehaviour
 
         }
 
-        isCorotineRunning = false;
+        isCoroutineRunning = false;
         yield return null;
 
     }

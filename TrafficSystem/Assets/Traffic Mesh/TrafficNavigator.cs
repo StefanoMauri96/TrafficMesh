@@ -39,15 +39,13 @@ public class TrafficNavigator : MonoBehaviour
 
         controller = GetComponent<CharacterNavigatorController>();
 
-    }
-
-    void Start()
-    {
-
         if (isRandomDirection == true)
             direction = RandomDirection();
 
-        controller.SetDestination(currentWayPoint.GetPosition());
+        if (currentWayPoint != null)
+        {          
+            controller.SetDestination(currentWayPoint.GetPosition());
+        }
 
         StartCoroutine(TrafficNavigatorLoop());
 
@@ -60,6 +58,14 @@ public class TrafficNavigator : MonoBehaviour
     {
 
         isStop = true;
+
+    }
+
+    public void SetFirstWayPoint(WayPoint value)
+    {
+
+        currentWayPoint = value;
+        controller.SetDestination(currentWayPoint.GetPosition());
 
     }
 
@@ -99,6 +105,9 @@ public class TrafficNavigator : MonoBehaviour
 
         while(isStop == false)
         {
+
+            if (currentWayPoint == null)
+                yield return null;
 
             if (controller.reachedDestination == true && currentWayPoint.isClose == false)
             {
@@ -163,7 +172,7 @@ public class TrafficNavigator : MonoBehaviour
                 controller.SetDestination(currentWayPoint.GetPosition());
 
             }
-            else
+            else if(currentWayPoint.isClose == true)
             {
 
                 _isArrived = true;
