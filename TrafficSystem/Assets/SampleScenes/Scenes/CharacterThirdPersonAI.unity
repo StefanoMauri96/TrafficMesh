@@ -1066,6 +1066,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f516587b4d91e42bdfe6cc1e04dcc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fwdDotProduct: 0
+  rightDotProduct: 0
   destination: {x: 0, y: 0, z: 0}
   stopDistance: 1
   rotationSpeed: 120
@@ -1590,6 +1592,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f516587b4d91e42bdfe6cc1e04dcc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fwdDotProduct: 0
+  rightDotProduct: 0
   destination: {x: 0, y: 0, z: 0}
   stopDistance: 1
   rotationSpeed: 120
@@ -2877,10 +2881,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1681868012, guid: 54eb5844754051b40a918a84c33b7c1a, type: 3}
+      propertyPath: startOnPlay
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1681868012, guid: 54eb5844754051b40a918a84c33b7c1a, type: 3}
+      propertyPath: movementSpeed
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 1681868013, guid: 54eb5844754051b40a918a84c33b7c1a, type: 3}
       propertyPath: currentWayPoint
       value: 
       objectReference: {fileID: 1368588996}
+    - target: {fileID: 1681868013, guid: 54eb5844754051b40a918a84c33b7c1a, type: 3}
+      propertyPath: controller2
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54eb5844754051b40a918a84c33b7c1a, type: 3}
 --- !u!1 &1011128633
@@ -4792,6 +4808,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f516587b4d91e42bdfe6cc1e04dcc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fwdDotProduct: 0
+  rightDotProduct: 0
   destination: {x: 0, y: 0, z: 0}
   stopDistance: 1
   rotationSpeed: 120
@@ -5566,6 +5584,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f516587b4d91e42bdfe6cc1e04dcc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fwdDotProduct: 0
+  rightDotProduct: 0
   destination: {x: 0, y: 0, z: 0}
   stopDistance: 1
   rotationSpeed: 120
@@ -5978,6 +5998,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f516587b4d91e42bdfe6cc1e04dcc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fwdDotProduct: 0
+  rightDotProduct: 0
   destination: {x: 0, y: 0, z: 0}
   stopDistance: 1
   rotationSpeed: 120

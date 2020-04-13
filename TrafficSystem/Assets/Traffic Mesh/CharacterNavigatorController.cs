@@ -4,6 +4,9 @@ using UnityEngine;
 public class CharacterNavigatorController : MonoBehaviour
 {
 
+    public float fwdDotProduct;
+    public float rightDotProduct;
+
     #region Private
 
     [Header("Only Debug")]
@@ -17,6 +20,10 @@ public class CharacterNavigatorController : MonoBehaviour
     private float movementSpeed;
     [SerializeField]
     private bool startOnPlay = false;
+    [SerializeField]
+    private TrafficFlocking trafficFlocking;
+    [SerializeField]
+    private bool useFlocking = true;
 
     private Vector3 velocity;
     private Vector3 lastPosition;
@@ -25,6 +32,8 @@ public class CharacterNavigatorController : MonoBehaviour
 
     private bool _reachedDestination;
     private bool _isWait;
+    private float initMovementSpeed;
+    private bool a;
 
     #endregion
 
@@ -48,14 +57,13 @@ public class CharacterNavigatorController : MonoBehaviour
     #endregion
 
 
-    private void Awake()
+    private void Start()
     {
 
         if(GetComponent<Animator>() == true)
             animator = GetComponent<Animator>();
 
         lastPosition = transform.position;
-        destination = transform.position;
 
         if (startOnPlay == true)
         {
@@ -130,6 +138,79 @@ public class CharacterNavigatorController : MonoBehaviour
             value = 0.1f;
 
         movementSpeed = value;
+        initMovementSpeed = movementSpeed;
+
+    }
+
+    #endregion
+
+    #region Private
+
+    private void ApplyFlockingRules()
+    {
+
+        float distance;
+        int groupSize = 0;
+        Vector3 vcenter = Vector3.zero;
+        Vector3 vavoid = Vector3.zero;
+
+        foreach (GameObject go in trafficFlocking.TrafficPeople)
+        {
+
+            if (go != this.gameObject)
+            {
+
+                distance = Vector3.Distance(go.transform.position, this.transform.position);
+
+                if (distance <= trafficFlocking.neighbourDistance)
+                {
+
+                    vcenter += go.transform.position;
+                    groupSize++;
+
+                    if (distance < 1f)
+                    {
+
+                        vavoid = vavoid + (this.transform.position - go.transform.position);
+
+
+                    }
+
+                    //CharacterNavigatorController anotherTrafficPerson = go.GetComponent<CharacterNavigatorController>();
+                    //movementSpeed = movementSpeed + anotherTrafficPerson.movementSpeed;
+
+                }
+
+            }
+
+        }
+
+        if (groupSize > 0)
+        {
+
+            a = false;
+            vcenter = vcenter / groupSize + (destination - this.transform.position);
+            //movementSpeed += 0.05f;
+
+            Vector3 direction = (vcenter + vavoid) - transform.position;
+
+            if (direction != Vector3.zero)
+            {
+
+                transform.rotation = Quaternion.Slerp(
+                    transform.rotation,
+                    Quaternion.LookRotation(direction),
+                    movementSpeed*2 * Time.deltaTime);
+
+            }
+
+        }
+        else
+        {
+
+            a = true;
+
+        }
 
     }
 
@@ -158,10 +239,18 @@ public class CharacterNavigatorController : MonoBehaviour
 
                     if (destinationDistance >= stopDistance)
                     {
-
                         _reachedDestination = false;
-                        Quaternion targetRoatation = Quaternion.LookRotation(destinationDirection);
-                        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRoatation, rotationSpeed * Time.deltaTime);
+
+                        ApplyFlockingRules();
+                        if(a == true)
+                        {
+
+                            movementSpeed = initMovementSpeed;
+                            Quaternion targetRoatation = Quaternion.LookRotation(destinationDirection);
+                            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRoatation, rotationSpeed * Time.deltaTime);
+
+                        }
+                      
                         transform.Translate(Vector3.forward * movementSpeed * Time.deltaTime);
 
                     }
@@ -180,11 +269,11 @@ public class CharacterNavigatorController : MonoBehaviour
                         velocity.y = 0;
                         var velocityMagitude = velocity.magnitude;
                         velocity = velocity.normalized;
-                        var fwdDotProduct = Vector3.Dot(transform.forward, velocity);
-                        var rightDotProduct = Vector3.Dot(transform.right, velocity);
+                        fwdDotProduct = Vector3.Dot(transform.forward, velocity);
+                        rightDotProduct = Vector3.Dot(transform.right, velocity);
 
-                        animator.SetFloat("Horizontal", rightDotProduct);
-                        animator.SetFloat("Forward", fwdDotProduct);
+                        animator.SetFloat("Turn", rightDotProduct, 0.1f, Time.deltaTime);
+                        animator.SetFloat("Forward", movementSpeed, 0.1f, Time.deltaTime);
 
                         lastPosition = transform.position;
 

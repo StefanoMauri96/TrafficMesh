@@ -459,13 +459,11 @@ public class WayPointManagerWindow : EditorWindow
     {
 
         WayPoint branchedFrom = Selection.activeGameObject.GetComponent<WayPoint>();
-        Debug.Log("BranchFrom: " + branchedFrom);
 
         GameObject wayPointObject = new GameObject("WayPoint " + trafficMesh.wayPointRoot.childCount, typeof(WayPoint));
         wayPointObject.transform.SetParent(trafficMesh.wayPointRoot, false);
 
         WayPoint wayPoint = wayPointObject.GetComponent<WayPoint>();
-        Debug.Log("Way point: " + wayPoint);
         trafficMesh.wayPoints.Add(wayPoint);
        
         if(wayPoint.branches == null)

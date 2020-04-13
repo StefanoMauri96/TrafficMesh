@@ -8,11 +8,15 @@ public class TrafficNavigator : MonoBehaviour
 
     [SerializeField]
     private WayPoint currentWayPoint;
+    [SerializeField]
+    private TrafficMesh currenTrafficMesh;
 
     [SerializeField]
     private typeDirection direction;
     [SerializeField]
     private bool isRandomDirection = true;
+    [SerializeField]
+    private bool haveFindNearestWayPoint = false;
 
     CharacterNavigatorController controller;
     private bool isStop = false;
@@ -41,6 +45,9 @@ public class TrafficNavigator : MonoBehaviour
 
         if (isRandomDirection == true)
             direction = RandomDirection();
+
+        if (haveFindNearestWayPoint == true)
+            currentWayPoint = FindNearestWayPoint();
 
         if (currentWayPoint != null)
         {          
@@ -79,7 +86,7 @@ public class TrafficNavigator : MonoBehaviour
     public typeDirection RandomDirection()
     {
 
-        int randomValue = Random.Range(0, 2);
+        int randomValue = Random.Range(0, 3);
 
         if(randomValue == 0)
         {
@@ -93,6 +100,34 @@ public class TrafficNavigator : MonoBehaviour
             return typeDirection.counterclockwise;
 
         }
+
+    }
+
+    #endregion
+
+    #region Private Functions
+
+    private WayPoint FindNearestWayPoint()
+    {
+
+        WayPoint nearestWayPoint = currenTrafficMesh.wayPoints[0];
+        float nearestDistance = 100;
+
+        for(int i=0; i<currenTrafficMesh.wayPoints.Count; i++)
+        {
+
+            float tempDistance = Vector3.Distance(transform.position, currenTrafficMesh.wayPoints[i].GetPosition());
+            if (tempDistance < nearestDistance)
+            {
+
+                nearestDistance = tempDistance;
+                nearestWayPoint = currenTrafficMesh.wayPoints[i];
+
+            }
+
+        }
+
+        return nearestWayPoint;
 
     }
 
@@ -124,7 +159,7 @@ public class TrafficNavigator : MonoBehaviour
                 if (shouldBranch == true)
                 {
 
-                    currentWayPoint = currentWayPoint.branches[Random.Range(0, currentWayPoint.branches.Count - 1)];
+                    currentWayPoint = currentWayPoint.branches[Random.Range(0, currentWayPoint.branches.Count)];
 
                 }
                 else
